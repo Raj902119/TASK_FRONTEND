@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { ImportLog, ImportStats, PaginationData, ApiResponse } from '@/types';
+import { useState, useEffect, useCallback } from 'react';
+import { ImportLog, ImportStats, PaginationData } from '@/types';
 import { importApi } from '@/lib/api';
 import ImportHistoryTable from '@/components/ImportHistoryTable';
 import StatsCard from '@/components/StatsCard';
@@ -20,7 +20,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [triggering, setTriggering] = useState(false);
 
-  const fetchImportHistory = async (page: number = 1) => {
+  const fetchImportHistory = useCallback(async (page: number = 1) => {
     try {
       const response = await importApi.getHistory({ page, limit: 10 });
       const data = response.data.data;
@@ -29,39 +29,39 @@ export default function Home() {
     } catch (error) {
       console.error('Failed to fetch import history:', error);
     }
-  };
+  }, []);
 
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     try {
       const response = await importApi.getStats(7);
       setStats(response.data.data);
     } catch (error) {
       console.error('Failed to fetch stats:', error);
     }
-  };
+  }, []);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     await Promise.all([
       fetchImportHistory(),
       fetchStats(),
     ]);
     setLoading(false);
-  };
+  }, [fetchImportHistory, fetchStats]);
 
   useEffect(() => {
     fetchData();
     // Refresh data every 30 seconds
     const interval = setInterval(fetchData, 30000);
     return () => clearInterval(interval);
-  }, []);
+  }, [fetchData]);
 
   const handleTriggerImport = async () => {
     if (triggering) return;
     
     try {
       setTriggering(true);
-      const response = await importApi.triggerImport();
+      await importApi.triggerImport();
       alert('Import triggered successfully!');
       
       // Refresh data

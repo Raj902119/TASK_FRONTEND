@@ -16,7 +16,7 @@ export default function QueueStats() {
       const response = await queueApi.getStats();
       setStats(response.data.data);
       setError(null);
-    } catch (err) {
+    } catch {
       setError('Failed to fetch queue stats');
     } finally {
       setLoading(false);
@@ -33,7 +33,7 @@ export default function QueueStats() {
     try {
       await queueApi.pause();
       alert('Queue paused successfully');
-    } catch (err) {
+    } catch {
       alert('Failed to pause queue');
     }
   };
@@ -42,7 +42,7 @@ export default function QueueStats() {
     try {
       await queueApi.resume();
       alert('Queue resumed successfully');
-    } catch (err) {
+    } catch {
       alert('Failed to resume queue');
     }
   };
@@ -52,7 +52,7 @@ export default function QueueStats() {
       const response = await queueApi.retry();
       alert(response.data.message);
       fetchStats();
-    } catch (err) {
+    } catch {
       alert('Failed to retry failed jobs');
     }
   };
@@ -63,7 +63,7 @@ export default function QueueStats() {
         const response = await queueApi.clean(24); // 24 hours
         alert(`Cleaned ${response.data.data.completedRemoved} completed and ${response.data.data.failedRemoved} failed jobs`);
         fetchStats();
-      } catch (err) {
+      } catch {
         alert('Failed to clean queue');
       }
     }
