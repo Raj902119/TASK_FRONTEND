@@ -26,8 +26,8 @@ export default function Home() {
       const data = response.data.data;
       setLogs(data.logs);
       setPagination(data.pagination);
-    } catch (error) {
-      console.error('Failed to fetch import history:', error);
+    } catch {
+      console.error('Failed to fetch import history');
     }
   }, []);
 
@@ -35,8 +35,8 @@ export default function Home() {
     try {
       const response = await importApi.getStats(7);
       setStats(response.data.data);
-    } catch (error) {
-      console.error('Failed to fetch stats:', error);
+    } catch {
+      console.error('Failed to fetch stats');
     }
   }, []);
 
@@ -68,7 +68,7 @@ export default function Home() {
       setTimeout(() => {
         fetchData();
       }, 2000);
-    } catch (error) {
+    } catch {
       alert('Failed to trigger import');
     } finally {
       setTriggering(false);
